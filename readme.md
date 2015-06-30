@@ -8,8 +8,7 @@ hue can wake you up. Help protect your home. Relive your favourite memories. Imp
 Not just stunning, hue is smart too. And it’s tailored for you.
 
 ## Philips Hue bash script
-With this script you can interact with the Philips Hue lightbulb or Philips Hue LED strip. You can change the brightness, saturation and the hue of the ligh
-ts, and create every color you desire.
+With this script you can interact with the Philips Hue lightbulb or Philips Hue LED strip. You can change the brightness, saturation and the hue of the lights, and create every color you desire.
 
     Usage:        hue.sh <light|group> <number> <state> <value> [<value>]
     =====================================================================
