@@ -3,7 +3,7 @@
 # hue.sh: script for interacting with the philips hue light.
 # 
 # author  : Harald van der Laan
-# version : v0.3
+# version : v0.3.1
 # date    : 30/jun/2015
 #
 # inplemented features:
@@ -33,6 +33,8 @@
 # - v0.3		Added xy gamut change option. for more
 #			info about gamut please go to the hue
 #			api development page.			(HLA)
+#
+# - v0.3.1		Added extra check for curl package	(HLA)
 
 # global variables
 hueBridge='10.0.20.2'
@@ -306,6 +308,12 @@ function hueCycle() {
 # main script
 if [ ${#} -lt 4 ]; then
 	usage
+fi
+
+if [ -z $(which curl) ]; then
+	echo "[-] Hue: curl is not installed. This script needs curl to communicate with the hue api."
+	echo "[-] Hue: Please install curl and try again."
+	exit 1
 fi
 
 hueDevice=${1}
