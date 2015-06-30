@@ -3,7 +3,7 @@
 # hue.sh: script for interacting with the philips hue light.
 # 
 # author  : Harald van der Laan
-# version : v0.2
+# version : v0.3
 # date    : 30/jun/2015
 #
 # inplemented features:
@@ -11,7 +11,7 @@
 # - changing the saturation of the lightbulb or group
 # - changing the brightness of the lightbulb or group
 # - changing the hue of a lightbulb or group
-# - changing the xy gamut of a lightbulb or group 		[TODO]
+# - changing the xy gamut of a lightbulb or group
 # - changing the ct temperature of a lightbulb or group		[TODO]
 # - demo the colors of the hue system
 #
@@ -29,6 +29,10 @@
 # - v0.2		Added hue cycle mode, this will cycle
 #			through the color spectrum of the hue
 #			lightbulb or group			(HLA)
+#
+# - v0.3		Added xy gamut change option. for more
+#			info about gamut please go to the hue
+#			api development page.			(HLA)
 
 # global variables
 hueBridge='10.0.20.2'
@@ -45,7 +49,7 @@ function usage() {
 	echo "saturation     :  hue.sh light 1 sat <0-255>"
 	echo "brightness     :  hue.sh light 1 bri <0-255>"
 	echo "hue            :  hue.sh light 1 hue <0-65535>"
-#	echo "xy gamut       :  hue.sh light 1 xy <0.0-1.0> <0.0-1.0>"
+	echo "xy gamut       :  hue.sh light 1 xy <0.0-1.0> <0.0-1.0>"
 #	echo "ct color temp  :  hue.sh light 1 ct <153-500>"
 	echo "color cycle    :  hue.sh light 1 cycle <0-65535> <0-65535>"
 	exit 1
@@ -188,7 +192,54 @@ function hueHue() {
                 exit 1
         fi
 
-        echo "[+] Hue: Huecommand send successfully to ${hueType}/${hueTypeNumber}."
+        echo "[+] Hue: Hue command send successfully to ${hueType}/${hueTypeNumber}."
+}
+
+function hueXy() {
+	local hueType=${1}
+        local hueTypeNumber=${2}
+        local hueState1=${3}
+        local hueState2=${4}
+
+	if [[ ${hueTypeNumber} != *[[:digit:]]* ]]; then
+                echo "[-] Hue: ${hueType} number: ${hueTypeNumber} is not a number."
+                exit 1
+        fi
+
+        case ${hueType} in
+                light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                *) echo "[-] Hue: The xy device mode is not light or group."; exit 1 ;;
+        esac
+
+        if [[ ${hueState1} != *[[:digit:]]* ]]; then
+                echo "[-] Hue: Xy value1: ${hueState1} is not a number."
+                exit 1
+        fi
+
+        if [[ ${hueState2} != *[[:digit:]]* ]]; then
+                echo "[-] Hue: Xy value2: ${hueState2} is not a number."
+                exit 1
+        fi	
+	
+	if (( $(bc <<< "${hueState1} <= 0") == 1 )) || (( $(bc <<< "${hueState1} >= 1") == 1 )); then
+		echo "[-] Hue: Xy value1 must be between 0.0 and 1.0."
+		exit 1
+	fi
+	
+	if (( $(bc <<< "${hueState2} <= 0") == 1 )) || (( $(bc <<< "${hueState2} >= 1") == 1 )); then
+                echo "[-] Hue: Xy value2 must be between 0.0 and 1.0."
+                exit 1
+        fi
+
+	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"xy": ['${hueState1}','${hueState2}']}' ${hueUrl}
+	
+	if [ ${?} -ne 0 ]; then
+		echo "[-] Hue: Failed to send xy command to ${hueType}/${hueTypeNumber}."
+                exit 1
+        fi
+
+        echo "[+] Hue: Xy command send successfully to ${hueType}/${hueTypeNumber}." 
 }
 
 function hueCycle() {
@@ -268,6 +319,7 @@ case ${hueDeviceAction} in
 	sat) hueSaturation ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ;;
 	bri) hueBrightness ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ;;
 	hue) hueHue ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ;;
+	xy) hueXy ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ${hueDeviceActionValue2} ;;
 	cycle) hueCycle ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ${hueDeviceActionValue2} ;;
 	*) usage ;;
 esac
