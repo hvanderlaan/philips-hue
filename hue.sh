@@ -32,7 +32,7 @@
 
 # global variables
 hueBridge='10.0.20.2'
-hueApiHash='162487800-28051982'
+hueApiHash='huedeveloper'
 hueBaseUrl="http://${hueBridge}/api/${hueApiHash}"
 hueTimeOut='5'
 
