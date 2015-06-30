@@ -228,6 +228,11 @@ function hueCycle() {
                 exit 1
         fi
 	
+	if [ ${hueState1} -ge ${hueState2} ]; then
+		echo "[-] Hue: Cycle value1 must be smaller then cycle value2."
+		exit 1
+	fi
+	
 	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"on": true, "bri": 180, "hue": 54000, "sat": 255}' ${hueUrl}
 	
 	if [ ${?} -ne 0 ]; then
