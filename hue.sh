@@ -62,8 +62,8 @@ function huePower() {
 	fi
 	
 	case ${hueType} in
-		light) hueUrl="${hueBaseUrl}/light/${hueTypeNumber}/state" ;;
-		group) hueUrl="${hueBaseUrl}/group/${hueTypeNumber}/state" ;;
+		light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
+		group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
 		*) echo "[-] Hue: The hue device mode is not light or group."; exit 1 ;;
 	esac
 	
@@ -94,8 +94,8 @@ function hueSaturation() {
         fi
 	
 	case ${hueType} in
-                light) hueUrl="${hueBaseUrl}/light/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/group/${hueTypeNumber}/state" ;;
+                light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
                 *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
         esac
 	
@@ -130,8 +130,8 @@ function hueBrightness() {
         fi
 
         case ${hueType} in
-                light) hueUrl="${hueBaseUrl}/light/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/group/${hueTypeNumber}/state" ;;
+                light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
                 *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
         esac
 
@@ -166,8 +166,8 @@ function hueHue() {
         fi
 
         case ${hueType} in
-                light) hueUrl="${hueBaseUrl}/light/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/group/${hueTypeNumber}/state" ;;
+                light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
                 *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
         esac
 	
@@ -203,8 +203,8 @@ function hueCycle() {
         fi
 
         case ${hueType} in
-                light) hueUrl="${hueBaseUrl}/light/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/group/${hueTypeNumber}/state" ;;
+                light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
                 *) echo "[-] Hue: The cycle device mode is not light or group."; exit 1 ;;
         esac
 
