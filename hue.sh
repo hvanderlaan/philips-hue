@@ -15,7 +15,7 @@
 # - changing the ct temperature of a lightbulb or group		[TODO]
 # - demo the colors of the hue system
 #
-# usage: 	hue.sh <light|group> <number> <state> <value> [<value>]
+# usage: 	hue.sh <light|group> <number> <action> <value> [<value>]
 # power usage:	hue.sh light 1 state <on|off>
 # saturation :	hue.sh light 1 sat <0-255>
 # brightness :	hue.sh light 1 bri <0-255>
@@ -39,8 +39,8 @@ hueTimeOut='5'
 # functions
 function usage() {
 	clear
-	echo "Usage:        hue.sh <light|group> <number> <state> <value> [<value>]"
-	echo "====================================================================="
+	echo "Usage:            hue.sh <light|group> <number> <action> <value> [<value>]"
+	echo "=========================================================================="
 	echo "power usage    :  hue.sh light 1 state <on|off>"
 	echo "saturation     :  hue.sh light 1 sat <0-255>"
 	echo "brightness     :  hue.sh light 1 bri <0-255>"
