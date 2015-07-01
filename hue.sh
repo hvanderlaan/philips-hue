@@ -3,7 +3,7 @@
 # hue.sh: script for interacting with the philips hue light.
 # 
 # author  : Harald van der Laan
-# version : v0.3.1
+# version : v0.4
 # date    : 30/jun/2015
 #
 # inplemented features:
@@ -12,7 +12,7 @@
 # - changing the brightness of the lightbulb or group
 # - changing the hue of a lightbulb or group
 # - changing the xy gamut of a lightbulb or group
-# - changing the ct temperature of a lightbulb or group		[TODO]
+# - changing the ct temperature of a lightbulb or group
 # - demo the colors of the hue system
 #
 # usage: 	hue.sh <light|group> <number> <action> <value> [<value>]
@@ -35,6 +35,8 @@
 #			api development page.			(HLA)
 #
 # - v0.3.1		Added extra check for curl package	(HLA)
+#
+# - v0.4		Added ct (color temperature)		(HLA)
 
 # global variables
 hueBridge='10.0.20.2'
@@ -52,7 +54,7 @@ function usage() {
 	echo "brightness     :  hue.sh light 1 bri <0-255>"
 	echo "hue            :  hue.sh light 1 hue <0-65535>"
 	echo "xy gamut       :  hue.sh light 1 xy <0.0-1.0> <0.0-1.0>"
-#	echo "ct color temp  :  hue.sh light 1 ct <153-500>"
+	echo "ct color temp  :  hue.sh light 1 ct <153-500>"
 	echo "color cycle    :  hue.sh light 1 cycle <0-65535> <0-65535>"
 	exit 1
 }
@@ -244,6 +246,42 @@ function hueXy() {
         echo "[+] Hue: Xy command send successfully to ${hueType}/${hueTypeNumber}." 
 }
 
+function hueCt() {
+	local hueType=${1}
+        local hueTypeNumber=${2}
+        local hueState=${3}
+
+        if [[ ${hueTypeNumber} != *[[:digit:]]* ]]; then
+                echo "[-] Hue: ${hueType} number: ${hueTypeNumber} is not a number."
+                exit 1
+        fi
+
+        case ${hueType} in
+                light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
+        esac
+
+        if [[ ${hueState} != *[[:digit:]]* ]]; then
+                echo "[-] Hue: Ct  value: ${hueState} is not a number."
+                exit 1
+        fi
+
+        if [ ${hueState} -lt 153 -o ${hueState} -gt 500 ]; then
+                echo "[-] Hue: Ct value must be between 0 and 255."
+                exit 1
+        fi
+
+        curl --max-time ${hueTimeOut} --silent --request PUT --data '{"ct": '${hueState}'}' ${hueUrl}
+
+        if [ ${?} -ne 0 ]; then
+                echo "[-] Hue: Failed to send ct command to ${hueType}/${hueTypeNumber}."
+                exit 1
+        fi
+
+        echo "[+] Hue: Ct command send successfully to ${hueType}/${hueTypeNumber}."
+}
+
 function hueCycle() {
 	local hueType=${1}
         local hueTypeNumber=${2}
@@ -328,6 +366,7 @@ case ${hueDeviceAction} in
 	bri) hueBrightness ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ;;
 	hue) hueHue ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ;;
 	xy) hueXy ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ${hueDeviceActionValue2} ;;
+	ct) hueCt ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ;;
 	cycle) hueCycle ${hueDevice} ${hueDeviceNumber} ${hueDeviceActionValue1} ${hueDeviceActionValue2} ;;
 	*) usage ;;
 esac
