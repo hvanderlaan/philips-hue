@@ -16,6 +16,8 @@ With this script you can interact with the Philips Hue lightbulb or Philips Hue 
     saturation     :  hue.sh light 1 sat <0-255>
     brightness     :  hue.sh light 1 bri <0-255>
     hue            :  hue.sh light 1 hue <0-65535>
+    xy             :  hue.sh light 1 xy <0.0-1.0> <0.0-1.0>
+    ct             :  hue.sh light 1 ct <153-500>
     color cycle    :  hue.sh light 1 cycle <0-65535> <0-65535>
 
 This script needs some modification to work for you. The only things you need to edit are:
