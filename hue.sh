@@ -3,8 +3,8 @@
 # hue.sh: script for interacting with the philips hue light.
 # 
 # author  : Harald van der Laan
-# version : v0.4
-# date    : 30/jun/2015
+# version : v0.5
+# date    : 01/jul/2015
 #
 # inplemented features:
 # - powering a hue lightbulb or group
@@ -37,10 +37,13 @@
 # - v0.3.1		Added extra check for curl package	(HLA)
 #
 # - v0.4		Added ct (color temperature)		(HLA)
+#
+# - v0.5		fixed hueJsonData layout and redirect
+#			curl output > /dev/nulll
 
 # global variables
-hueBridge='10.0.20.2'
-hueApiHash='huedeveloper'
+hueBridge='localhost'
+hueApiHash='newdeveloper'
 hueBaseUrl="http://${hueBridge}/api/${hueApiHash}"
 hueTimeOut='5'
 
@@ -76,12 +79,12 @@ function huePower() {
 	esac
 	
 	case ${hueState} in
-		on) hueJsonData='{"on": true}' ;;
-		off) hueJsonData='{"on": false}' ;;
+		on) hueJsonData='{"on":true}' ;;
+		off) hueJsonData='{"on":false}' ;;
 		*) echo "[-] Hue: The hue state can only be on or off."; exit 1 ;;
 	esac
 	
-	curl --max-time ${hueTimeOut} --silent --request PUT --data ${hueJsonData} ${hueUrl}
+	curl --max-time ${hueTimeOut} --silent --request PUT --data ${hueJsonData} ${hueUrl} &> /dev/null
 	
 	if [ ${?} -ne 0 ]; then
 		echo "[-] Hue: Failed to send power command to ${hueType}/${hueTypeNumber}."
@@ -117,7 +120,7 @@ function hueSaturation() {
 		exit 1
 	fi
 	
-	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"sat": '${hueState}'}' ${hueUrl}
+	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"sat":'${hueState}'}' ${hueUrl} &> /dev/null
 	
 	if [ ${?} -ne 0 ]; then
 		echo "[-] Hue: Failed to send saturation command to ${hueType}/${hueTypeNumber}."
@@ -153,7 +156,7 @@ function hueBrightness() {
                 exit 1
         fi
 
-        curl --max-time ${hueTimeOut} --silent --request PUT --data '{"bri": '${hueState}'}' ${hueUrl}
+        curl --max-time ${hueTimeOut} --silent --request PUT --data '{"bri":'${hueState}'}' ${hueUrl} &> /dev/null
 
         if [ ${?} -ne 0 ]; then
                 echo "[-] Hue: Failed to send brightness command to ${hueType}/${hueTypeNumber}."
@@ -189,7 +192,7 @@ function hueHue() {
                 exit 1
         fi
 
-        curl --max-time ${hueTimeOut} --silent --request PUT --data '{"hue": '${hueState}'}' ${hueUrl}
+        curl --max-time ${hueTimeOut} --silent --request PUT --data '{"hue":'${hueState}'}' ${hueUrl} &> /dev/null
 
         if [ ${?} -ne 0 ]; then
                 echo "[-] Hue: Failed to send hue command to ${hueType}/${hueTypeNumber}."
@@ -236,7 +239,7 @@ function hueXy() {
                 exit 1
         fi
 
-	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"xy": ['${hueState1}','${hueState2}']}' ${hueUrl}
+	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"xy":['${hueState1}','${hueState2}']}' ${hueUrl} &> /dev/null
 	
 	if [ ${?} -ne 0 ]; then
 		echo "[-] Hue: Failed to send xy command to ${hueType}/${hueTypeNumber}."
@@ -272,7 +275,7 @@ function hueCt() {
                 exit 1
         fi
 
-        curl --max-time ${hueTimeOut} --silent --request PUT --data '{"ct": '${hueState}'}' ${hueUrl}
+        curl --max-time ${hueTimeOut} --silent --request PUT --data '{"ct":'${hueState}'}' ${hueUrl} &> /dev/null
 
         if [ ${?} -ne 0 ]; then
                 echo "[-] Hue: Failed to send ct command to ${hueType}/${hueTypeNumber}."
@@ -324,14 +327,14 @@ function hueCycle() {
 		exit 1
 	fi
 	
-	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"on": true, "bri": 180, "hue": 54000, "sat": 255}' ${hueUrl}
+	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"on":true,"bri":180,"hue":54000,"sat":255}' ${hueUrl} &> /dev/null
 	
 	if [ ${?} -ne 0 ]; then
 		echo "[-] Hue: Failed to send reset command to ${hueType}/${hueTypeNumber}."
 	fi
 	
 	for (( hueValue=${hueState1}; hueValue<=${hueState2}; hueValue+=1000 )); do
-		curl --max-time ${hueTimeOut} --silent --request PUT --data '{"hue": '${hueValu}'}' ${hueUrl}
+		curl --max-time ${hueTimeOut} --silent --request PUT --data '{"hue":'${hueValue}'}' ${hueUrl} &> /dev/null
 		
 		if [ ${?} -ne 0 ]; then
 			echo "[-] Hue: Failed to send cycle command to ${hueType}/${hueTypeNumber}, Hue is: ${hueValue}."
