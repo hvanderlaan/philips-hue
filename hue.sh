@@ -3,7 +3,7 @@
 # hue.sh: script for interacting with the philips hue light.
 # 
 # author  : Harald van der Laan
-# version : v0.5
+# version : v0.5.1
 # date    : 01/jul/2015
 #
 # inplemented features:
@@ -38,8 +38,10 @@
 #
 # - v0.4		Added ct (color temperature)		(HLA)
 #
-# - v0.5		fixed hueJsonData layout and redirect
+# - v0.5		Fixed hueJsonData layout and redirect
 #			curl output > /dev/nulll
+#
+# - v0.5.1		Changed brightness setting in cycle	(HLA)
 
 # global variables
 hueBridge='localhost'
@@ -327,7 +329,7 @@ function hueCycle() {
 		exit 1
 	fi
 	
-	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"on":true,"bri":180,"hue":54000,"sat":255}' ${hueUrl} &> /dev/null
+	curl --max-time ${hueTimeOut} --silent --request PUT --data '{"on":true,"bri":254,"hue":54000,"sat":255}' ${hueUrl} &> /dev/null
 	
 	if [ ${?} -ne 0 ]; then
 		echo "[-] Hue: Failed to send reset command to ${hueType}/${hueTypeNumber}."
