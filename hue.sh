@@ -3,8 +3,8 @@
 # hue.sh: script for interacting with the philips hue light.
 # 
 # author  : Harald van der Laan
-# version : v0.5.1
-# date    : 01/jul/2015
+# version : v0.6.0
+# date    : 12/jul/2016
 #
 # inplemented features:
 # - powering a hue lightbulb or group
@@ -42,11 +42,15 @@
 #			curl output > /dev/nulll
 #
 # - v0.5.1		Changed brightness setting in cycle	(HLA)
+#
+# - v0.6.0		Added huePort for enter a no standard
+#			port for the hue bridge			(HLA)
 
 # global variables
 hueBridge='localhost'
+huePort='80'
 hueApiHash='newdeveloper'
-hueBaseUrl="http://${hueBridge}/api/${hueApiHash}"
+hueBaseUrl="http://${hueBridge}:${huePort}/api/${hueApiHash}"
 hueTimeOut='5'
 
 # functions
