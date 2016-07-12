@@ -26,4 +26,9 @@ This script needs some modification to work for you. The only things you need to
     hueBridge='10.0.20.2'      # this is the ip-address of the hue bridge
     hueApiHash='huedeveloper'  # this is you hue api user.
 
+## Using the emulator
 
+    $ java -jar HueEmulator-v0.7.jar
+    $ sudo java -jar HueEmulator-v0.7.jar
+
+The script uses default port 80 if you don't change this, you need to run the emulator as root
