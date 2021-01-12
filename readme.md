@@ -19,6 +19,13 @@ With this script you can interact with the Philips Hue lightbulb or Philips Hue 
     xy             :  hue.sh light 1 xy <0.0-1.0> <0.0-1.0>
     ct             :  hue.sh light 1 ct <153-500>
     color cycle    :  hue.sh light 1 cycle <0-65535> <0-65535>
+    
+    Lights/Groups
+    ==========================================================================
+    Light 1        :  Tree Lamp
+    Light 2        :  Home
+    Group 1        :  Garden
+    Group 2        :  Living room
 
 This script needs some modification to work for you. The only things you need to edit are:
 
