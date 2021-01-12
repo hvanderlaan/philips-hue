@@ -69,6 +69,10 @@ function usage() {
 	echo ""	
 	echo "Lights/Groups"
 	echo "=========================================================================="
+	if [[ $hueApiHash == "" ]]; then
+		echo "[-] Hue: Failed to get IDs from API! Please edit your global variabales"
+		exit 1
+	fi
 	curl -S --max-time ${hueTimeOut} --silent --request GET ${hueBaseUrl}/lights | jq -r 'keys[] as $k | "Light \($k)        :  \(.[$k] | .name)"'
 	curl -S --max-time ${hueTimeOut} --silent --request GET ${hueBaseUrl}/groups | jq -r 'keys[] as $k | "Group \($k)        :  \(.[$k] | .name)"'
 	echo ""
