@@ -47,15 +47,16 @@
 #			port for the hue bridge			(HLA)
 
 # global variables
-hueBridge='localhost'
+hueBridge=''
 huePort='80'
-hueApiHash='newdeveloper'
+hueApiHash=''
 hueBaseUrl="http://${hueBridge}:${huePort}/api/${hueApiHash}"
 hueTimeOut='5'
 
 # functions
 function usage() {
-	clear
+	MYDIR="$(dirname "$(realpath "$0")")"
+	echo ""
 	echo "Usage:            hue.sh <light|group> <number> <action> <value> [<value>]"
 	echo "=========================================================================="
 	echo "power usage    :  hue.sh light 1 state <on|off>"
@@ -65,6 +66,12 @@ function usage() {
 	echo "xy gamut       :  hue.sh light 1 xy <0.0-1.0> <0.0-1.0>"
 	echo "ct color temp  :  hue.sh light 1 ct <153-500>"
 	echo "color cycle    :  hue.sh light 1 cycle <0-65535> <0-65535>"
+	echo ""	
+	echo "Lights/Groups"
+	echo "=========================================================================="
+	curl -S --max-time ${hueTimeOut} --silent --request GET ${hueBaseUrl}/lights | jq -r 'keys[] as $k | "Light \($k)        :  \(.[$k] | .name)"'
+	curl -S --max-time ${hueTimeOut} --silent --request GET ${hueBaseUrl}/groups | jq -r 'keys[] as $k | "Group \($k)        :  \(.[$k] | .name)"'
+	echo ""
 	exit 1
 }
 
@@ -80,7 +87,7 @@ function huePower() {
 	
 	case ${hueType} in
 		light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
-		group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+		group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/action" ;;
 		*) echo "[-] Hue: The hue device mode is not light or group."; exit 1 ;;
 	esac
 	
@@ -112,7 +119,7 @@ function hueSaturation() {
 	
 	case ${hueType} in
                 light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/action" ;;
                 *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
         esac
 	
@@ -148,7 +155,7 @@ function hueBrightness() {
 
         case ${hueType} in
                 light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/action" ;;
                 *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
         esac
 
@@ -184,7 +191,7 @@ function hueHue() {
 
         case ${hueType} in
                 light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/action" ;;
                 *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
         esac
 	
@@ -221,7 +228,7 @@ function hueXy() {
 
         case ${hueType} in
                 light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/action" ;;
                 *) echo "[-] Hue: The xy device mode is not light or group."; exit 1 ;;
         esac
 
@@ -267,7 +274,7 @@ function hueCt() {
 
         case ${hueType} in
                 light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/action" ;;
                 *) echo "[-] Hue: The Hue device mode is not light or group."; exit 1 ;;
         esac
 
@@ -304,7 +311,7 @@ function hueCycle() {
 
         case ${hueType} in
                 light) hueUrl="${hueBaseUrl}/lights/${hueTypeNumber}/state" ;;
-                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/state" ;;
+                group) hueUrl="${hueBaseUrl}/groups/${hueTypeNumber}/action" ;;
                 *) echo "[-] Hue: The cycle device mode is not light or group."; exit 1 ;;
         esac
 
@@ -353,6 +360,12 @@ function hueCycle() {
 }
 
 # main script
+if [ -z $(which jq) ]; then
+        echo "[-] Hue: jq is not installed. This script needs jq to get the group or light id form the hue api."
+        echo "[-] Hue: Please install jq and try again."
+        exit 1
+fi
+
 if [ ${#} -lt 4 ]; then
 	usage
 fi
