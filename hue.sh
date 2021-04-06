@@ -3,8 +3,8 @@
 # hue.sh: script for interacting with the philips hue light.
 # 
 # author  : Harald van der Laan
-# version : v0.6.0
-# date    : 12/jul/2016
+# version : v0.7.1
+# date    : 06/04/2021
 #
 # inplemented features:
 # - powering a hue lightbulb or group
@@ -45,6 +45,10 @@
 #
 # - v0.6.0		Added huePort for enter a no standard
 #			port for the hue bridge			(HLA)
+#
+# - v0.7.0		Updated groups API route		(JJW)
+#
+# - v0.7.1		Added list of all lights and groups	(JJW)
 
 # global variables
 hueBridge=''
@@ -55,7 +59,6 @@ hueTimeOut='5'
 
 # functions
 function usage() {
-	MYDIR="$(dirname "$(realpath "$0")")"
 	echo ""
 	echo "Usage:            hue.sh <light|group> <number> <action> <value> [<value>]"
 	echo "=========================================================================="
