@@ -27,15 +27,14 @@ With this script you can interact with the Philips Hue lightbulb or Philips Hue 
     Group 1        :  Garden
     Group 2        :  Living room
 
-This script needs some modification to work for you. The only things you need to edit are:
+
+## Installation
+This script needs some modification to work for you. The only things you need to edit/install are:
 
     # global variables
-    hueBridge='10.0.20.2'      # this is the ip-address of the hue bridge
-    hueApiHash='huedeveloper'  # this is you hue api user.
-
-## Using the emulator
-
-    $ java -jar HueEmulator-v0.7.jar
-    $ sudo java -jar HueEmulator-v0.7.jar
-
-The script uses default port 80 if you don't change this, you need to run the emulator as root
+    hueBridge='<ip-address>'        # this is the ip-address of the hue bridge
+    hueApiHash='<api-token>'        # this is you hue api token.
+    
+    # install packages
+        -   curl                    # for commmunication with the HUE HTTP API
+        -   jp                      # to parse data from the API
