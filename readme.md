@@ -29,12 +29,18 @@ With this script you can interact with the Philips Hue lightbulb or Philips Hue 
 
 
 ## Installation
-This script needs some modification to work for you. The only things you need to edit/install are:
+This script needs some modification to work for you. The only things you need to install/edit are:
 
-    # global variables
-    hueBridge='<ip-address>'        # this is the ip-address of the hue bridge
-    hueApiHash='<api-token>'        # this is you hue api token.
-    
     # install packages
         -   curl                    # for commmunication with the HUE HTTP API
         -   jp                      # to parse data from the API
+
+    # global variables
+    hueBridge='<ip-address>'        # this is the ip-address of the hue bridge
+    hueApiHash='<api-hash>'        # this is you hue api hash.
+
+Phillips HUE developer documentation: https://developers.meethue.com/develop/get-started-2/
+
+
+    
+   
